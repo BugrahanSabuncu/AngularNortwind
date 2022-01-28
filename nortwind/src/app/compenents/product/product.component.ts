@@ -57,6 +57,7 @@ export class ProductComponent implements OnInit {
   ];*/
   products: Product[] = [];
   dataLoaded = false;
+  filterText="";
   /*productResponsModel:ProductResponceModel={
     data:this.products,
     message:"",

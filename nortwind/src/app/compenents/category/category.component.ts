@@ -27,7 +27,7 @@ export class CategoryComponent implements OnInit {
 
   }
   setCurrentCategory(category:Category){
-    this.currentCategory=category;
+    this.currentCategory=category;    
   }
 
   getCurrentCategoryClass(category:Category){
@@ -44,6 +44,10 @@ export class CategoryComponent implements OnInit {
     }else{
       return "list-group-item"
     }
+  }
+  clearCategoryClass(){
+    this.currentCategory=this.clearCategory
+    this.getAllCategoryClass()    
   }
 
 }
