@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Product } from 'src/app/Models/product';
+import { CartService } from 'src/app/services/cart.service';
 import { ProductService } from 'src/app/services/product.service';
 
 @Component({
@@ -9,71 +11,25 @@ import { ProductService } from 'src/app/services/product.service';
   styleUrls: ['./product.component.css'],
 })
 export class ProductComponent implements OnInit {
-  /* product1 = {
-    productId: 1,
-    productName: 'Bardak',
-    categoryId: 1,
-    unitPrice: 5,
-    unitsInStock:5,
-  };
-  product2 = {
-    productId: 2,
-    productName: 'Laptop',
-    categoryId: 1,
-    unitPrice: 5,
-    unitsInStock:6,
-  };
-  product3 = {
-    productId: 3,
-    productName: 'Mouse',
-    categoryId: 1,
-    unitPrice: 5,
-    unitsInStock:10,
-  };
-  product4 = {
-    productId: 4,
-    productName: 'Keyboard',
-    categoryId: 1,
-    unitPrice: 5,
-    unitsInStock:20,
-  };
-  product5 = {
-    productId: 5,
-    productName: 'Camera',
-    categoryId: 1,
-    unitPrice: 5,
-    unitsInStock:40,
-  };*/
-  //any her tip olur demek süslü parantezlede obje yaptık
-  /*interface verildiğinde alan uyuşmazlığı hataya sebep olur fakat
-  any kullanıldıysa bu hata alınmaz*/
-
-  /*products:Product[] = [
-    this.product1,
-    this.product2,
-    this.product3,
-    this.product4,
-    this.product5,
-  ];*/
   products: Product[] = [];
   dataLoaded = false;
-  filterText="";
-  /*productResponsModel:ProductResponceModel={
-    data:this.products,
-    message:"",
-    success:true
-  }*/
-  constructor(private productService: ProductService,
-    private activetedRoot:ActivatedRoute) {}
+  filterText = '';
+
+  constructor(
+    private productService: ProductService,
+    private activetedRoot: ActivatedRoute,
+    private toastrService: ToastrService,
+    private cartService:CartService,
+  ) {}
 
   ngOnInit(): void {
-    this.activetedRoot.params.subscribe(params => {
-      if(params["categoryId"]){
-        this.getProductsByCategory(params["categoryId"])
-      }else{
-        this.getProducts()
+    this.activetedRoot.params.subscribe((params) => {
+      if (params['categoryId']) {
+        this.getProductsByCategory(params['categoryId']);
+      } else {
+        this.getProducts();
       }
-    })
+    });
   }
 
   getProducts() {
@@ -82,10 +38,18 @@ export class ProductComponent implements OnInit {
       this.dataLoaded = true;
     });
   }
-  getProductsByCategory(categoryId:number) {
-    this.productService.getProductsByCategory(categoryId).subscribe((responce) => {
-      this.products = responce.data;
-      this.dataLoaded = true;
-    });
+
+  getProductsByCategory(categoryId: number) {
+    this.productService
+      .getProductsByCategory(categoryId)
+      .subscribe((responce) => {
+        this.products = responce.data;
+        this.dataLoaded = true;
+      });
+  }
+
+  addToCart(product: Product) {
+    this.toastrService.success('Sepete eklendi', product.productName);
+    this.cartService.addToCart(product)
   }
 }
